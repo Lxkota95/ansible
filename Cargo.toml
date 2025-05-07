@@ -3,9 +3,9 @@ name = "ansible"
 version = "0.1.0"
 edition = "2024"
 description = "Rust API for Ansible"
-authors = ["Jack Coleman <jack.p.coleman1@gmail.com>"]
+authors = ["Lxkota"]
 repository = "https://github.com/Lxkota95/ansible"
-license = "LICENSE"
+license = "MIT"
 readme = "README.md"
 
 [dependencies]
