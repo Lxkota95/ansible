@@ -2,5 +2,11 @@
 name = "ansible"
 version = "0.1.0"
 edition = "2024"
+description = "Rust API for Ansible"
+authors = ["Jack Coleman <jack.p.coleman1@gmail.com>"]
+repository = "https://github.com/Lxkota95/ansible"
+license = "LICENSE"
+readme = "README.md"
 
 [dependencies]
+serde = "1.0.219"
