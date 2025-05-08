@@ -62,7 +62,6 @@ impl Inventory {
     pub fn get_hosts(self) -> Result<Vec<Host>> {
         let mut hosts = Vec::new();
         for (hostname, hostvars) in self.data["_meta"]["hostvars"].as_object().unwrap() {
-            // let host_vars = &self.data["_meta"]["hostvars"][item.as_str().unwrap()];
             let host = Host {
                 name: hostname.to_string(),
                 data: hostvars.to_owned(),
