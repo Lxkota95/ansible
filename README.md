@@ -7,6 +7,7 @@ Rust API for Ansible
 - [X] API to get hosts from inventory
 - [X] API to get vars for host
 - [X] Add Ansible test data to repo for use in test suite
+- [ ] Official Rust docs
 - [ ] Ansible adhoc command
 - [ ] Ansible playbook command
 
