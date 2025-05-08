@@ -1,4 +1,4 @@
-const TEST_INVENTORY: &str = "./tests/hosts";
+const TEST_INVENTORY: &str = "./tests/hosts.toml";
 
 #[cfg(test)]
 mod tests {
