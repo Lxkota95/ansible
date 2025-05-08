@@ -1,19 +1,26 @@
-use ansible::Inventory;
-
-const TEST_INVENTORY: &str = "/etc/ansible/hosts";
+const TEST_INVENTORY: &str = "./tests/hosts";
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
-
     use super::*;
-    use ansible::Load;
+    use ansible::{Inventory, Load};
+    use std::path::PathBuf;
 
     #[test]
     fn test_inventory_load() {
         let inventory = Inventory::load(PathBuf::from(TEST_INVENTORY));
         assert!(inventory.is_ok());
         println!("INVENTORY: {}", inventory.unwrap().data);
+    }
+
+    #[test]
+    fn test_inventory_get_host() {
+        let inventory = Inventory::load(PathBuf::from(TEST_INVENTORY)).unwrap();
+        let host = inventory.get_host("nycpi001");
+        assert!(host.is_ok());
+        println!("HOST: {:?}", host);
+        let host = host.unwrap();
+        println!("HOST: {:?}, VARS: {:?}", host, host.data);
     }
 
     #[test]

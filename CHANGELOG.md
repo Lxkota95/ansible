@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] - 2025.05.07
 - Structs for Ansible `Inventory` and `Host` objects
 - `Load` trait for `Inventory` struct
+- `get_host()` method for `Inventory` struct
 - `get_hosts()` method for `Inventory` struct
 - `get_vars()` method for `Host` struct
 - Basic test coverage
