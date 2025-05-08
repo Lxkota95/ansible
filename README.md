@@ -2,10 +2,13 @@
 Rust API for Ansible
 
 ## Progress Tracker
-- [ ] Ansible inventory command to run `ansible-inventory`
-- [ ] Parse method for inventory to json
+- [X] Ansible inventory command `ansible-inventory`
+- [X] Load trait for inventory to json
+- [X] API to get hosts from inventory
+- [X] API to get vars for host
 - [ ] Ansible adhoc command
 - [ ] Ansible playbook command
 
 ## Features
-- `#TODO`
+- Load Ansible inventory data into json object
+- Load Ansible host variavles into json object
