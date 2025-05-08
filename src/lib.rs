@@ -11,7 +11,7 @@ pub struct Inventory {
 
 #[derive(Debug, Clone)]
 pub struct Host {
-    pub name: Value,
+    pub name: String,
     pub data: Value,
 }
 
@@ -61,11 +61,11 @@ impl Load for Inventory {
 impl Inventory {
     pub fn get_hosts(self) -> Result<Vec<Host>> {
         let mut hosts = Vec::new();
-        for item in self.data["all"]["children"].as_array().unwrap() {
-            let host_vars = &self.data["_meta"]["hostvars"][item.as_str().unwrap()];
+        for (hostname, hostvars) in self.data["_meta"]["hostvars"].as_object().unwrap() {
+            // let host_vars = &self.data["_meta"]["hostvars"][item.as_str().unwrap()];
             let host = Host {
-                name: item.to_owned(),
-                data: host_vars.to_owned(),
+                name: hostname.to_string(),
+                data: hostvars.to_owned(),
             };
             hosts.push(host);
         }

@@ -31,6 +31,7 @@ mod tests {
         let hosts = inventory.get_hosts().unwrap();
         for host in hosts {
             assert!(host.clone().get_vars().is_ok());
+            println!("HOST: {}", host.name);
             println!("VARS: {}", host.get_vars().unwrap());
         }
     }
