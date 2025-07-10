@@ -28,7 +28,7 @@ impl Load for Inventory {
             Command::new("which")
                 .arg(ANSIBLE_INVENTORY_COMMAND)
                 .output()
-                .unwrap()
+                .unwrap() // # TODO: handle unrwap
                 .status
                 .success()
         );
@@ -40,13 +40,13 @@ impl Load for Inventory {
                 "--inventory",
                 source
                     .to_str()
-                    .expect("Inventory source is not valid unicode"),
+                    .expect("Inventory source is not valid // # TODO: handle expect
                 "--list",
             ])
             .output()?;
         if command.status.success() {
             let raw_data = String::from_utf8_lossy(&command.stdout);
-            let data: Value = serde_json::from_str(&raw_data).unwrap();
+            let data: Value = serde_json::from_str(&raw_data).unwrap(); // # TODO: handle unrwap
             Ok(Inventory { path: source, data })
         } else {
             Err(anyhow!(
@@ -72,7 +72,7 @@ impl Inventory {
 impl Inventory {
     pub fn get_hosts(self) -> Result<Vec<Host>> {
         let mut hosts = Vec::new();
-        for (hostname, hostvars) in self.data["_meta"]["hostvars"].as_object().unwrap() {
+        for (hostname, hostvars) in self.data["_meta"]["hostvars"].as_object().unwrap() { // # TODO: handle unrwap
             let host = Host {
                 name: hostname.to_string(),
                 data: hostvars.to_owned(),
