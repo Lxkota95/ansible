@@ -50,7 +50,7 @@ impl Load for Inventory {
             Ok(Inventory { path: source, data })
         } else {
             Err(anyhow!(
-                "Ansible command failed: stdin: {:?}\nstderr: {:?}",
+                "Ansible command failed: stdout: {:?}\nstderr: {:?}",
                 command.stdout,
                 command.stderr
             ))
