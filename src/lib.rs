@@ -1,4 +1,6 @@
-use anyhow::{Result, anyhow};
+mod error;
+
+pub use error::{Error, Result};
 use serde_json::Value;
 use std::{path::PathBuf, process::Command};
 
@@ -33,7 +35,7 @@ impl Load for Inventory {
                 .success()
         );
         if !source.exists() {
-            return Err(anyhow!("Invalid path to Ansible inventory: {:?}", source));
+            return Err(Error::InventoryNotFound(source));
         }
         let command = Command::new(ANSIBLE_INVENTORY_COMMAND)
             .args([
@@ -43,17 +45,21 @@ impl Load for Inventory {
                     .expect("Inventory source is not valid unicode"),
                 "--list",
             ])
-            .output()?;
+            .output()
+            .map_err(|source| Error::Io {
+                command: ANSIBLE_INVENTORY_COMMAND,
+                source,
+            })?;
         if command.status.success() {
             let raw_data = String::from_utf8_lossy(&command.stdout);
             let data: Value = serde_json::from_str(&raw_data).unwrap();
             Ok(Inventory { path: source, data })
         } else {
-            Err(anyhow!(
-                "Ansible command failed: stdin: {:?}\nstderr: {:?}",
-                command.stdout,
-                command.stderr
-            ))
+            Err(Error::CommandFailed {
+                command: ANSIBLE_INVENTORY_COMMAND,
+                status: command.status,
+                stderr: String::from_utf8_lossy(&command.stderr).trim().to_owned(),
+            })
         }
     }
 }
