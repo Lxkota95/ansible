@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+  RUSTDOCFLAGS: -D warnings
+
+jobs:
+  test:
+    name: fmt, clippy, test, doc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      # The crate shells out to ansible-inventory, so the tests need Ansible
+      - run: pipx install ansible-core
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets
+      - run: cargo test
+      - run: cargo doc --no-deps
+
+  msrv:
+    name: rust-version (1.85)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@1.85
+      - run: pipx install ansible-core
+      - run: cargo test

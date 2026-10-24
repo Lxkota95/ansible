@@ -1,44 +1,49 @@
 # ansible
-Rust API for Ansible
+Rust API for Ansible. Wraps Ansible's command-line tools, so it needs Ansible installed
+(`ansible-inventory` on `PATH`).
 
 ## Progress Tracker
 - [X] Ansible inventory command
-- [X] Load trait for inventory to json
 - [X] API to get hosts from inventory
 - [X] API to get vars for host
 - [X] Add Ansible test data to repo for use in test suite
-- [ ] Official Rust docs
+- [X] Typed errors, no panics (0.3.0)
+- [X] Official Rust docs (doctests run with `cargo test`)
+- [ ] Inventory groups
 - [ ] Ansible adhoc command
 - [ ] Ansible playbook command
 
-## Features
-- Load Ansible inventory data into serde json object
+## Usage
 ```rust
-use ansible::{Inventory, Load};
+use ansible::Inventory;
 
-let inventory = Inventory::load(PathBuf::from('/path/to/inventory'))?;
-let data = inventory.data
-```
+fn main() -> ansible::Result<()> {
+    let inventory = Inventory::load("/path/to/inventory")?;
 
-- Get specific host from Ansible inventory
-```rust
-use ansible::{Inventory, Load};
+    // Full `ansible-inventory --list` output (a serde_json::Value), including groups
+    println!("{:#}", inventory.data());
 
-let inventory = Inventory::load(PathBuf::from('/path/to/inventory'))?;
-let host = inventory.get_host("<hostname>")?;
-hostvars = host.get_vars()?;
-```
+    // One host (None if the inventory doesn't have it)
+    if let Some(host) = inventory.host("<hostname>") {
+        println!("{}", host.vars());
+    }
 
-- Get all hosts from Ansible inventory
-```rust
-use ansible::{Inventory, Load};
-
-let inventory = Inventory::load(PathBuf::from('/path/to/inventory'))?;
-let hosts = inventory.get_hosts()?;
-for host in hosts {
-    hostvars = host.get_vars()?;
+    // Every host, sorted by name
+    for host in inventory.hosts() {
+        println!("{}: {}", host.name(), host.vars());
+    }
+    Ok(())
 }
 ```
 
+Errors are `ansible::Error` values you can match on: `InventoryNotFound`, `CommandNotFound`
+(Ansible not installed), `CommandFailed` (e.g. an unparseable inventory, with Ansible's stderr), and
+`InvalidOutput`. See the [docs](https://docs.rs/ansible) and [CHANGELOG](CHANGELOG.md).
+
 ## Tests
-- Execute tests with `cargo test -- --nocapture` to see stdout
+`cargo test` runs the unit, integration and doc tests (needs Ansible installed).
+
+## Releasing
+Bump `version` in `Cargo.toml` and add a `CHANGELOG.md` entry in the PR. Merging it to `main` runs
+`.github/workflows/release.yml`, which publishes to crates.io (if that version isn't there yet) and
+pushes the `vX.Y.Z` tag. Merges that don't change the version publish nothing.

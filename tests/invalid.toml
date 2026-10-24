@@ -1,0 +1,3 @@
+# Deliberately invalid TOML: tests that an unparseable inventory is an error, not empty
+[nycpi.hosts
+nycpi001 = {}
