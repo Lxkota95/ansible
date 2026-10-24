@@ -1,4 +1,4 @@
-use ansible::Inventory;
+use ansible::{Error, Inventory};
 use serde_json::json;
 
 const TEST_INVENTORY: &str = "./tests/hosts.toml";
@@ -30,5 +30,29 @@ fn host_vars() {
     assert_eq!(
         inventory.host("nycpi001").unwrap().vars(),
         &json!({ "foo": "bar" })
+    );
+}
+
+#[test]
+fn unknown_host_is_none() {
+    let inventory = Inventory::load(TEST_INVENTORY).unwrap();
+    assert!(inventory.host("no-such-host").is_none());
+}
+
+#[test]
+fn missing_inventory_is_inventory_not_found() {
+    let err = Inventory::load("./tests/does-not-exist.toml").unwrap_err();
+    assert!(matches!(err, Error::InventoryNotFound(_)), "{err:?}");
+}
+
+#[test]
+fn unparseable_inventory_is_command_failed() {
+    let err = Inventory::load("./tests/invalid.toml").unwrap_err();
+    let Error::CommandFailed { stderr, .. } = &err else {
+        panic!("expected CommandFailed, got {err:?}");
+    };
+    assert!(
+        stderr.contains("parse"),
+        "stderr should explain the failure: {stderr}"
     );
 }
