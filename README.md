@@ -42,3 +42,8 @@ Errors are `ansible::Error` values you can match on: `InventoryNotFound`, `Comma
 
 ## Tests
 `cargo test` runs the unit, integration and doc tests (needs Ansible installed).
+
+## Releasing
+Bump `version` in `Cargo.toml` and add a `CHANGELOG.md` entry in the PR. Merging it to `main` runs
+`.github/workflows/release.yml`, which publishes to crates.io (if that version isn't there yet) and
+pushes the `vX.Y.Z` tag. Merges that don't change the version publish nothing.
