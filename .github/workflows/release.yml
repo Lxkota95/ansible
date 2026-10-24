@@ -21,6 +21,9 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Must match the crates.io trusted publisher's environment. The GitHub environment only allows
+    # the main branch, so no other branch's copy of this workflow can get a publish token.
+    environment: release
     steps:
       - uses: actions/checkout@v7
 

@@ -24,8 +24,8 @@ Hardening release. **Breaking** API changes; see Migration below.
 
 ### Added
 - Crate documentation with runnable examples; error-path tests; CI; `rust-version = "1.85"`.
-- Release workflow: merging a version bump to `main` publishes to crates.io (trusted publishing)
-  and tags `vX.Y.Z`.
+- Release workflow: merging a version bump to `main` publishes to crates.io (trusted publishing,
+  GitHub environment `release` limited to `main`) and tags `vX.Y.Z`.
 
 ### Migration
 | 0.2 | 0.3 |
