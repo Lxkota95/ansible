@@ -1,3 +1,41 @@
+//! Rust API for [Ansible](https://docs.ansible.com/).
+//!
+//! Wraps Ansible's command-line tools; it needs Ansible installed (`ansible-inventory` on `PATH`).
+//!
+//! # Inventory
+//!
+//! [`Inventory::load`] reads any inventory Ansible understands and gives typed access to its hosts
+//! and their variables (merged from the inventory, `host_vars/` and `group_vars/`):
+//!
+//! ```
+//! use ansible::Inventory;
+//!
+//! # fn main() -> ansible::Result<()> {
+//! let inventory = Inventory::load("tests/hosts.toml")?;
+//!
+//! // One host; `None` if the inventory doesn't have it
+//! let host = inventory.host("nycpi001").expect("host is in the test inventory");
+//! assert_eq!(host.vars()["foo"], "bar");
+//!
+//! // Every host, sorted by name
+//! for host in inventory.hosts() {
+//!     println!("{}: {}", host.name(), host.vars());
+//! }
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! Failures are [`Error`] values you can match on, for example a missing inventory:
+//!
+//! ```
+//! use ansible::{Error, Inventory};
+//!
+//! match Inventory::load("does/not/exist") {
+//!     Err(Error::InventoryNotFound(path)) => println!("no inventory at {}", path.display()),
+//!     other => panic!("unexpected: {other:?}"),
+//! }
+//! ```
+
 mod error;
 
 pub use error::{Error, Result};
